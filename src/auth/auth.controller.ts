@@ -34,7 +34,6 @@ export class AuthController {
   async handleSteamReturn(@Req() req: Request, @Res() res: Response) {
     const steamUser = await this.authService.validateSteamReturn(req);
     const token = await this.authService.generateToken(steamUser);
-    console.log(token);
-    return res.json(token);
+    return res.redirect(`http://localhost:4200/steam/callback?token=${token.access_token}`);
   }
 }

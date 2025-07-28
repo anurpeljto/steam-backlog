@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: ./
+    ports:
+      - "3000:3000"
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - DB_HOST=steam-backlog-tutshack4-a083.l.aivencloud.com
+      - DB_PORT=23849
+      - DB_USERNAME=avnadmin
+      - DB_PASSWORD=AVNS_hs6bbcgov8xxFW9P3f4
+      - DB_NAME=defaultdb
+      - STEAM_KEY=D20B6AEE47072DF491ABF1408884EC04
+    depends_on:
+      - redis
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"

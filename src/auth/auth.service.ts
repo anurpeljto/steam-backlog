@@ -103,7 +103,7 @@ export class AuthService {
                     res({
                     steamid: steamId,
                     personaname: player.personaname,
-                    avatar: player.avatar,
+                    avatar: player.avatarfull,
                     profileurl: player.profileurl,
                     });
 

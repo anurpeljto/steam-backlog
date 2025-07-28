@@ -1,15 +1,20 @@
 import { Controller, Get, HttpStatus, Param } from '@nestjs/common';
-import { UserSearchService } from './user-search.service';
+import { GamesServiceService } from 'src/games-service/games-service.service';
 
 @Controller('user-search')
 export class UserSearchController {
 
     constructor(
-        private userSearchService: UserSearchService
+        private gamesService: GamesServiceService
     ){}
 
-    @Get("/games/:id")
-    getUserData(@Param('id')userId: number){
-        return this.userSearchService.findUser(userId);
+    @Get('/games/:steamId')
+    async getUserGames(@Param('steamId') steamId: string) {
+        return await this.gamesService.fetchAndStoreUserGames(steamId);
+    }
+
+    @Get('/games/:steamId/metadata')
+    async getUserGamesFromDb(@Param('steamId') steamId: string){
+        return await this.gamesService.getUserGamesWithMetadata(steamId);
     }
 }
