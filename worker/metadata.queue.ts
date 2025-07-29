@@ -1,6 +1,6 @@
-import { Injectable } from "@nestjs/common";
-import { Queue } from "bullmq";
-import { ConfigService } from "@nestjs/config";
+import { Injectable } from '@nestjs/common';
+import { Queue } from 'bullmq';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class MetadataQueue {
