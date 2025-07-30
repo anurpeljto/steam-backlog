@@ -25,4 +25,7 @@ export class OwnedGame {
 
   @UpdateDateColumn()
   updated_at: Date;
+
+  @Column({ type: 'boolean', nullable: true})
+  isCompleted: boolean | null;
 }

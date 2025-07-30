@@ -6,12 +6,14 @@ import { OwnedGame } from 'src/entities/ownedgame.entity';
 import { User } from 'src/entities/user.entity';
 import { GamesServiceService } from './games-service.service';
 import { MetadataModule } from 'src/worker/metadata.module';
+import { GameTimeModule } from 'src/game-time/game-time.module';
 
 @Module({
     imports: [
         HttpModule,
         TypeOrmModule.forFeature([OwnedGame, User, GameMetadata]),
-        MetadataModule
+        MetadataModule,
+        GameTimeModule
     ],
     providers: [GamesServiceService],
     exports: [GamesServiceService]

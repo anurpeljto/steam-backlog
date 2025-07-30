@@ -52,6 +52,7 @@ export class GamesServiceService {
       throw new Error('Missing response from GetOwnedGames');
     }
     for (const g of games) {
+      
       await this.ownedRepo.upsert(
         {
           user: { id: user.id },
@@ -87,7 +88,7 @@ export class GamesServiceService {
           game.categories === null || 
           game.description === null ||
           game.header_image === null ||
-          game.genres === null ) &&
+          game.genres === null ) && 
           game.last_fetched <= yesterday
       ){
         console.log(`Game ${game.name} is missing a field, `)
