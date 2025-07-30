@@ -4,13 +4,15 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import { firstValueFrom } from 'rxjs';
+import Game, { GameResponse } from 'src/common/interfaces/game.interface';
 import { GameMetadata } from 'src/entities/game_metadata.entity';
 import { OwnedGame } from 'src/entities/ownedgame.entity';
 import { User } from 'src/entities/user.entity';
 import { In, Repository } from 'typeorm';
-import { MetadataQueue } from 'worker/metadata.queue';
+import { MetadataQueue } from 'src/worker/metadata.queue';
 
 @Injectable()
 export class GamesServiceService {
@@ -21,6 +23,7 @@ export class GamesServiceService {
     private metadataRepo: Repository<GameMetadata>,
     private http: HttpService,
     private metadataQueue: MetadataQueue,
+    private config: ConfigService
   ) {}
 
   async fetchAndStoreUserGames(steamId: string) {
@@ -31,11 +34,11 @@ export class GamesServiceService {
     }
 
     const response = await firstValueFrom(
-      this.http.get(
+      this.http.get<GameResponse>(
         'https://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/',
         {
           params: {
-            key: process.env.STEAM_KEY,
+            key: this.config.get('STEAM_KEY'),
             steamid: steamId,
             include_appinfo: 1,
             format: 'json',
@@ -44,7 +47,10 @@ export class GamesServiceService {
       ),
     );
     const games = response?.data?.response?.games || [];
-
+    if(!games) {
+      console.log('Missing response from GetOwnedGames');
+      throw new Error('Missing response from GetOwnedGames');
+    }
     for (const g of games) {
       await this.ownedRepo.upsert(
         {
@@ -59,15 +65,34 @@ export class GamesServiceService {
       );
     }
 
-    const appIds = games.map((g) => g.appid);
+    const appIds = games.map((g: Game) => g.appid);
     const existingMetadata = await this.metadataRepo.findBy({
-      appid: In(appIds),
+      appid: In<Number>(appIds),
     });
-    const existingAppIds = new Set(existingMetadata.map((m) => m.appid));
-    const missingAppIds = appIds.filter((appid) => !existingAppIds.has(appid));
+
+    const existingAppIds = new Set(existingMetadata.map((m: GameMetadata) => m.appid));
+    const missingAppIds = appIds.filter((appid: number) => !existingAppIds.has(appid));
 
     for (const appid of missingAppIds) {
       await this.metadataQueue.addFetchJob(appid);
+    }
+
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+
+    for (const game of existingMetadata){
+      if(
+        ( game.hltb_100_percent === null ||
+          game.hltb_main_story === null ||
+          game.categories === null || 
+          game.description === null ||
+          game.header_image === null ||
+          game.genres === null ) &&
+          game.last_fetched <= yesterday
+      ){
+        console.log(`Game ${game.name} is missing a field, `)
+        await this.metadataQueue.addFetchJob(game.appid);
+      }
     }
 
     return games.map((g) => ({
@@ -124,6 +149,8 @@ export class GamesServiceService {
         'gm.header_image AS header_image',
         'gm.genres AS genres',
         'gm.categories AS categories',
+        'gm.hltb_main_story AS main_story',
+        'gm.hltb_100_percent AS hltb_100_percent',
       ])
       .limit(size)
       .offset(page * size)

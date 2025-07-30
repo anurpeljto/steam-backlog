@@ -5,7 +5,7 @@ import { GameMetadata } from 'src/entities/game_metadata.entity';
 import { OwnedGame } from 'src/entities/ownedgame.entity';
 import { User } from 'src/entities/user.entity';
 import { GamesServiceService } from './games-service.service';
-import { MetadataModule } from 'worker/metadata.module';
+import { MetadataModule } from 'src/worker/metadata.module';
 
 @Module({
     imports: [

@@ -5,7 +5,7 @@ export class GameMetadata {
   @PrimaryColumn()
   appid: number; 
 
-  @Column()
+  @Column({type: 'varchar', nullable: false})
   name: string;
 
   @Column({ type: 'text', nullable: true })
@@ -20,10 +20,10 @@ export class GameMetadata {
   @Column({ type: 'json', nullable: true })
   categories: string[];
 
-  @Column({ type: 'float', nullable: true })
+  @Column({ type: 'float8', nullable: true })
   hltb_main_story: number;
 
-  @Column({ type: 'float', nullable: true })
+  @Column({ type: 'float8', nullable: true })
   hltb_100_percent: number;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })

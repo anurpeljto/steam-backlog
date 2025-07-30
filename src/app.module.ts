@@ -12,7 +12,9 @@ import { GameMetadata } from './entities/game_metadata.entity';
 import { GamesServiceService } from './games-service/games-service.service';
 import { HttpModule } from '@nestjs/axios';
 import { GamesServiceModule } from './games-service/games-service.module';
-import { MetadataModule } from 'worker/metadata.module';
+import { MetadataModule } from 'src/worker/metadata.module';
+import { GameTimeService } from './game-time/game-time.service';
+import { GameTimeModule } from './game-time/game-time.module';
 
 @Module({
   imports: [AuthModule, UsersModule, ConfigModule.forRoot({isGlobal: true}), UserSearchModule, HttpModule, MetadataModule, GamesServiceModule,
@@ -32,9 +34,10 @@ import { MetadataModule } from 'worker/metadata.module';
       ],
       ssl: {rejectUnauthorized: false} 
     }),
-    GamesServiceModule
+    GamesServiceModule,
+    GameTimeModule
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, GameTimeService],
 })
 export class AppModule {}

@@ -1,14 +1,16 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, OnModuleInit } from '@nestjs/common';
 import { Queue } from 'bullmq';
 import { ConfigService } from '@nestjs/config';
 
 @Injectable()
-export class MetadataQueue {
+export class MetadataQueue implements OnModuleInit{
     private queue: Queue;
 
     constructor(
         private config: ConfigService
-    ){
+    ){}
+
+    onModuleInit() {
         this.queue = new Queue('metadata', {
             connection: {
                 host: this.config.get('REDIS_HOST') || 'localhost',
@@ -18,7 +20,8 @@ export class MetadataQueue {
     }
 
     async addFetchJob(appid: number){
-        await this.queue.add('fetch-metadata', {appid});
-        console.log('Adding metadata for app with id: ', appid);
+        const jobId = `appid-${appid}`;
+        await this.queue.add('fetch-metadata', {appid}, {jobId: jobId});
+        // console.log('Adding metadata for app with id: ', appid);
     }
 }
