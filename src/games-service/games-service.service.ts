@@ -152,6 +152,7 @@ export class GamesServiceService {
         'gm.categories AS categories',
         'gm.hltb_main_story AS main_story',
         'gm.hltb_100_percent AS hltb_100_percent',
+        'og.isCompleted AS isCompleted'
       ])
       .limit(size)
       .offset(page * size)
