@@ -58,6 +58,7 @@ export class MetadataWorker implements OnModuleInit{
                         header_image: appData.header_image,
                         hltb_100_percent: null,
                         hltb_main_story: null,
+                        description: appData.short_description,
                         rating: appData.recommendations?.total || null
                     } as any);
                     return;
@@ -72,22 +73,29 @@ export class MetadataWorker implements OnModuleInit{
                         tags: [],
                         last_fetched: new Date(),
                         header_image: appData.header_image,
+                        description: appData.short_description,
                         hltb_100_percent: hltb && hltb.completely ? hltb.completely : null,
                         hltb_main_story: hltb
                     });
-                    console.log('Saved metadata for: ', appData.name);
 
-                    const game = await this.ownedGameRepo.findOne({
-                        where: {
-                            appid: appid
+                    try {
+                        const game = await this.ownedGameRepo.findOne({
+                            where: {
+                                appid: appid
+                            }
+                        });
+
+                        if(!game){
+                            console.log('Could not get game from ownedgames table');
+                            return;
                         }
-                    });
-                    if(!game){
-                        console.log('Could not get game from ownedgames table');
-                        return;
+
+                        game.isCompleted = this.getIsCompleted(game.playtime_minutes, hltb);
+                        await this.ownedGameRepo.save(game);
+                    } catch (error){
+                        console.log('Error saving isCompleted: ', error);
                     }
-                    game.isCompleted = this.getIsCompleted(game.playtime_minutes, hltb.completely);
-                    await this.ownedGameRepo.save(game);
+                    console.log('Saved metadata for: ', appData.name);
                     } catch (err) {
                       console.log(`Failed to save metadata for appid ${appid}`, err);
                     }
@@ -112,7 +120,7 @@ export class MetadataWorker implements OnModuleInit{
         if(!completionTime){
             return null;
         }
-        return (playedTime*60) > completionTime;
+        return playedTime > completionTime * 60;
     }
 
     sleep(ms: number) {

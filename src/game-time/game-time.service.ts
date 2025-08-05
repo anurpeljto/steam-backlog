@@ -34,7 +34,7 @@ export class GameTimeService {
     }
 
     async getGameTime(gameTitle: string) {
-        console.log(`[IGDB] Fetching game time for: ${gameTitle}`);
+        console.log(`[RAWG] Fetching game time for: ${gameTitle}`);
 
         // try {
         //     await this.getTwitchToken();

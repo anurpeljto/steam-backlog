@@ -11,7 +11,7 @@ import Game, { GameResponse } from 'src/common/interfaces/game.interface';
 import { GameMetadata } from 'src/entities/game_metadata.entity';
 import { OwnedGame } from 'src/entities/ownedgame.entity';
 import { User } from 'src/entities/user.entity';
-import { In, Repository } from 'typeorm';
+import { In, Like, Repository } from 'typeorm';
 import { MetadataQueue } from 'src/worker/metadata.queue';
 import MetaData from 'src/common/interfaces/metadata.interface';
 
@@ -226,4 +226,14 @@ export class GamesServiceService {
     .sort((a,b) => b.combinedScore - a.combinedScore)
     .slice(0, Number(amount) || 10);
   }
+
+  async searchGames(title: string, steamId: string) {
+    return this.ownedRepo
+      .createQueryBuilder('og')
+      .innerJoin('users', 'u', 'og.user_id = u.id')
+      .innerJoin('game_metadata', 'gm', 'og.appid = gm.appid')
+      .where('u.steam_id = :steamId', {steamId})
+      .andWhere('gm.name ILIKE :title', { title: `%${title}%`})
+      .getMany();
+    }
 }
