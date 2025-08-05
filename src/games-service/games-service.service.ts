@@ -79,8 +79,8 @@ export class GamesServiceService {
       await this.metadataQueue.addFetchJob(appid);
     }
 
-    const yesterday = new Date();
-    yesterday.setDate(yesterday.getDate() - 1);
+    const thisWeek = new Date();
+    thisWeek.setDate(thisWeek.getDate() - 7);
 
     for (const game of existingMetadata){
       if(
@@ -90,8 +90,8 @@ export class GamesServiceService {
           game.description === null ||
           game.header_image === null ||
           game.rating === null || 
-          game.genres === null ) //&& 
-          // game.last_fetched <= yesterday
+          game.genres === null ) && 
+          game.last_fetched <= thisWeek
       ){
         console.log(`Game ${game.name} is missing a field, `)
         await this.metadataQueue.addFetchJob(game.appid);
