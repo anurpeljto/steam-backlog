@@ -227,13 +227,35 @@ export class GamesServiceService {
     .slice(0, Number(amount) || 10);
   }
 
-  async searchGames(title: string, steamId: string) {
-    return this.ownedRepo
+  async searchGames(title: string, steamId: string, page: number = 0, size: number = 10) {
+    const qb =  this.ownedRepo
       .createQueryBuilder('og')
       .innerJoin('users', 'u', 'og.user_id = u.id')
       .innerJoin('game_metadata', 'gm', 'og.appid = gm.appid')
       .where('u.steam_id = :steamId', {steamId})
       .andWhere('gm.name ILIKE :title', { title: `%${title}%`})
-      .getMany();
+
+    const total = await qb.getCount();
+
+    const games = await qb.select([
+      'og.appid AS appid',
+      'og.playtime_minutes AS playtime_minutes',
+      'og.last_played AS last_played',
+      'gm.name AS name',
+      'gm.header_image AS header_image',
+      'gm.genres AS genres',
+      'gm.categories AS categories',
+      'og.isCompleted AS isCompleted',
+      'gm.rating AS rating'
+    ])
+    .limit(size)
+    .offset(page * size)
+    .getRawMany();
+
+    return {
+      total,
+      totalPages: Math.ceil(total / size),
+      games: games.map(game => ({...game, expanded: false}))
     }
+  }
 }

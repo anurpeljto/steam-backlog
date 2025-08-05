@@ -44,8 +44,10 @@ export class UserSearchController {
     @Get('/games/:steamid/search')
     async searchGames(
         @Query('search') search: string,
-        @Param('steamid') steamid: string
+        @Param('steamid') steamid: string,
+        @Query('page') page: number,
+        @Query('size') size: number
     ){
-        return this.gamesService.searchGames(search, steamid);
+        return this.gamesService.searchGames(search, steamid, page, size);
     }
 }
