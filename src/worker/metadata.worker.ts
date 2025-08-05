@@ -46,7 +46,7 @@ export class MetadataWorker implements OnModuleInit{
                 console.log('Appdata valid: ', appData.name);
 
                 const hltb = await this.hltbService.getGameTime(appData.name);
-                if (!hltb || Object.keys(hltb).length === 0) {
+                if (!hltb) {
                     console.log(`Empty HLTB data for appid ${appid}`);
                     await this.metadataRepo.save({
                         appid,
@@ -57,13 +57,13 @@ export class MetadataWorker implements OnModuleInit{
                         last_fetched: new Date(),
                         header_image: appData.header_image,
                         hltb_100_percent: null,
-                        hltb_main_story: null
+                        hltb_main_story: null,
+                        rating: appData.recommendations?.total || null
                     } as any);
                     return;
                 }
 
                 try {
-                    console.log('saving');
                     await this.metadataRepo.save({
                         appid,
                         name: appData.name,
@@ -73,7 +73,7 @@ export class MetadataWorker implements OnModuleInit{
                         last_fetched: new Date(),
                         header_image: appData.header_image,
                         hltb_100_percent: hltb && hltb.completely ? hltb.completely : null,
-                        hltb_main_story: hltb && hltb.normally ? hltb.normally : null
+                        hltb_main_story: hltb
                     });
                     console.log('Saved metadata for: ', appData.name);
 

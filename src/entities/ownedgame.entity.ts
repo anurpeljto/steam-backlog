@@ -11,7 +11,7 @@ export class OwnedGame {
   @JoinColumn({ name: 'user_id' })
   user: User;
 
-  @Column({ unique: true})
+  @Column()
   appid: number;
 
   @Column({ default: 0 })

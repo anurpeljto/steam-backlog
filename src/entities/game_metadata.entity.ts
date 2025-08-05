@@ -31,4 +31,7 @@ export class GameMetadata {
 
   @Column({type: 'varchar', nullable: true})
   header_image: string;
+
+  @Column({type: 'bigint', nullable: true})
+  rating: number | null;
 }

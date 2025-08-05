@@ -64,6 +64,9 @@ export interface GameDetails {
         "pegi"?: Rating;
         "steam_germany"?: Rating;
     };
+    recommendations?: {
+        total: number;
+    };
 }
 
 export interface Rating {

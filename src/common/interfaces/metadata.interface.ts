@@ -9,4 +9,5 @@ export default interface MetaData {
     description: string;
     name: string;
     header_image: string;
+    rating?: number | null;
 }

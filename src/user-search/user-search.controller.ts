@@ -32,4 +32,12 @@ export class UserSearchController {
     ){
         return this.gamesService.getUserGamesGenres(steamid);
     }
+
+    @Get('/games/:steamid/recommended')
+    async getRecommendedGames(
+        @Param('steamid') steamid: string,
+        @Query('amount') amount?: string
+    ){
+        return this.gamesService.getRecommendedGames(steamid, amount);
+    }
 }

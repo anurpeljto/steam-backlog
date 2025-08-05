@@ -13,6 +13,7 @@ import { OwnedGame } from 'src/entities/ownedgame.entity';
 import { User } from 'src/entities/user.entity';
 import { In, Repository } from 'typeorm';
 import { MetadataQueue } from 'src/worker/metadata.queue';
+import MetaData from 'src/common/interfaces/metadata.interface';
 
 @Injectable()
 export class GamesServiceService {
@@ -88,8 +89,9 @@ export class GamesServiceService {
           game.categories === null || 
           game.description === null ||
           game.header_image === null ||
-          game.genres === null ) && 
-          game.last_fetched <= yesterday
+          game.rating === null || 
+          game.genres === null ) //&& 
+          // game.last_fetched <= yesterday
       ){
         console.log(`Game ${game.name} is missing a field, `)
         await this.metadataQueue.addFetchJob(game.appid);
@@ -109,9 +111,9 @@ export class GamesServiceService {
     steamId: string,
     page: number,
     size: number,
-    filter: string,
-    genre: string,
-    category: string,
+    filter: string | undefined,
+    genre: string | undefined,
+    category: string | undefined,
   ) {
     const user = await this.usersRepo.findOne({ where: { steam_id: steamId } });
     if (!user) {
@@ -152,7 +154,8 @@ export class GamesServiceService {
         'gm.categories AS categories',
         'gm.hltb_main_story AS main_story',
         'gm.hltb_100_percent AS hltb_100_percent',
-        'og.isCompleted AS isCompleted'
+        'og.isCompleted AS isCompleted',
+        'gm.rating AS rating'
       ])
       .limit(size)
       .offset(page * size)
@@ -182,5 +185,45 @@ export class GamesServiceService {
         genre: g.genre,
       })),
     };
+  }
+
+  async getRecommendedGames(steamid: string, amount?: string){
+    const {games} = await this.getUserGamesWithMetadata(steamid, 0, 9999, undefined, undefined, undefined);
+    const genreCount: Record<string, number> = {};
+    games.forEach(g => {
+      if (Array.isArray(g.genres)){
+        g.genres.forEach((genre: string) => {
+        genreCount[genre] = (genreCount[genre] || 0) + 1;
+      });
+    }
+    });
+
+    const total = Object.values(genreCount).reduce((a,b) => a+b, 0);
+    const userVector = Object.fromEntries(Object.entries(genreCount).map(([k,v]) => [k, v/total]));
+
+    const scored = games.map(g => {
+      const gVector: Record<string, number> = {};
+      if (Array.isArray(g.genres)){
+        g.genres.forEach((genre: string) => gVector[genre] = 1);
+      }
+      const score = Object.keys(userVector).reduce(
+        (sum, genre) => sum + (userVector[genre] || 0) * (gVector[genre] || 0),
+        0
+      );
+
+      return {...g, score};
+    });
+
+    return scored
+    .filter(g => !g.isCompleted)
+    .map(g => {
+      const ratingVal = g.rating && g.rating > 0 ? Math.log(g.rating) / 5 : 0;
+      return {
+        ...g,
+        combinedScore: (g.score * 0.6) + (ratingVal*0.4)
+      }
+    })
+    .sort((a,b) => b.combinedScore - a.combinedScore)
+    .slice(0, Number(amount) || 10);
   }
 }
