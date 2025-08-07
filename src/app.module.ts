@@ -15,6 +15,7 @@ import { GamesServiceModule } from './games-service/games-service.module';
 import { MetadataModule } from 'src/worker/metadata.module';
 import { GameTimeService } from './game-time/game-time.service';
 import { GameTimeModule } from './game-time/game-time.module';
+import { BadgesModule } from './badges/badges.module';
 
 @Module({
   imports: [AuthModule, UsersModule, ConfigModule.forRoot({isGlobal: true}), UserSearchModule, HttpModule, MetadataModule, GamesServiceModule,
@@ -35,7 +36,8 @@ import { GameTimeModule } from './game-time/game-time.module';
       ssl: {rejectUnauthorized: false} 
     }),
     GamesServiceModule,
-    GameTimeModule
+    GameTimeModule,
+    BadgesModule
   ],
   controllers: [AppController],
   providers: [AppService, GameTimeService],

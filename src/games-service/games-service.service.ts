@@ -213,9 +213,8 @@ export class GamesServiceService {
 
       return {...g, score};
     });
-
     return scored
-    .filter(g => !g.isCompleted)
+    .filter(g => g.iscompleted !== true)
     .map(g => {
       const ratingVal = g.rating && g.rating > 0 ? Math.log(g.rating) / 5 : 0;
       return {
