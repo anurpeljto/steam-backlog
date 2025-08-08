@@ -16,11 +16,17 @@ export class BadgesService {
     }
 
     getBadgeById(id: string){
-        return this.badgesRepo.findOne({
+        const badge = this.badgesRepo.findOne({
             where: {
                 id: Number(id)
             }
         });
+
+        if(!badge){
+            throw new NotFoundException('Badge not found');
+        }
+
+        return badge;
     }
 
     createBadge(badge: BadgeInterface){
