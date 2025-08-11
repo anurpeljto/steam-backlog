@@ -20,8 +20,7 @@ export class GamesServiceService {
   constructor(
     @InjectRepository(OwnedGame) private ownedRepo: Repository<OwnedGame>,
     @InjectRepository(User) private usersRepo: Repository<User>,
-    @InjectRepository(GameMetadata)
-    private metadataRepo: Repository<GameMetadata>,
+    @InjectRepository(GameMetadata) private metadataRepo: Repository<GameMetadata>,
     private http: HttpService,
     private metadataQueue: MetadataQueue,
     private config: ConfigService
@@ -72,6 +71,10 @@ export class GamesServiceService {
       appid: In<Number>(appIds),
     });
 
+    if(!existingMetadata){
+      throw new NotFoundException('User has no existing metadata');
+    }
+    
     const existingAppIds = new Set(existingMetadata.map((m: GameMetadata) => m.appid));
     const missingAppIds = appIds.filter((appid: number) => !existingAppIds.has(appid));
 
