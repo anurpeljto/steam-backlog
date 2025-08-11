@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Badge } from 'src/entities/badge.entity';
 import { Repository } from 'typeorm';
@@ -15,8 +15,8 @@ export class BadgesService {
         return this.badgesRepo.find();
     }
 
-    getBadgeById(id: string){
-        const badge = this.badgesRepo.findOne({
+    async getBadgeById(id: string){
+        const badge = await this.badgesRepo.findOne({
             where: {
                 id: Number(id)
             }
@@ -29,9 +29,14 @@ export class BadgesService {
         return badge;
     }
 
-    createBadge(badge: BadgeInterface){
+    async createBadge(badge: BadgeInterface){
         const {name, description, condition} = badge;
-        return this.badgesRepo.save({
+
+        if (!name || !description || condition === undefined) {
+            throw new Error('Missing required fields');
+        }
+
+        return await this.badgesRepo.save({
             name,
             description,
             condition
@@ -40,6 +45,11 @@ export class BadgesService {
 
     async updateBadge(badge: BadgeInterface, badge_id: string){
         const {name, description, condition} = badge;
+
+        if (!name || !description || condition === undefined) {
+            throw new BadRequestException('Missing required fields');
+        }
+
         const existingBadge = await this.badgesRepo.findOne({where: {
             id: Number(badge_id)
         }});
@@ -59,7 +69,8 @@ export class BadgesService {
         const deletedBadge = await this.badgesRepo.delete({
             id: Number(badge_id)
         });
-        if(deletedBadge.affected === 0){
+
+        if(!deletedBadge){
             throw new NotFoundException(`Badge with id ${badge_id} not found`);
         }
 
