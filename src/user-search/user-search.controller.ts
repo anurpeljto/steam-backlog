@@ -56,4 +56,13 @@ export class UserSearchController {
     ){
         return this.gamesService.searchGames(search, steamid, page, size);
     }
+
+    @UseGuards(AuthGuard)
+    @Get('/game/:id')
+    async getGameMetadata(
+        @Param('id') id: number,
+        @Query('steamid') steamid: string
+    ){
+        return this.gamesService.getGameMetadata(id, steamid);
+    }
 }

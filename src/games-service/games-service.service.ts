@@ -2,6 +2,7 @@ import { HttpService } from '@nestjs/axios';
 import {
   BadRequestException,
   Injectable,
+  InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -261,5 +262,37 @@ export class GamesServiceService {
       totalPages: Math.ceil(total / size),
       games: games.map(game => ({...game, expanded: false}))
     }
+  }
+
+  async getGameMetadata(appid: number, steamid?: string) {
+    console.log(steamid);
+    const gameEntry = await this.metadataRepo.findOne({
+      where: {
+        appid: appid
+      }
+    });
+
+    if(!gameEntry){
+      throw new NotFoundException('Game with given appid not found');
+    }
+
+    let userGameData: OwnedGame | null = null;
+
+    if(steamid){
+      try{
+        userGameData = await this.ownedRepo.createQueryBuilder('og')
+        .innerJoinAndSelect('og.user', 'u')
+        .where('u.steam_id = :steamid', { steamid })
+        .andWhere('og.appid = :appid', { appid})
+        .getOne();
+      } catch (error){
+        throw new InternalServerErrorException(error.message);
+      }
+    }
+
+      return {
+        metadata: gameEntry,
+        userData: userGameData
+      };
   }
 }
