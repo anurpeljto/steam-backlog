@@ -74,7 +74,6 @@ export class MetadataWorker implements OnModuleInit{
                         last_fetched: new Date(),
                         header_image: appData.header_image,
                         description: appData.short_description,
-                        hltb_100_percent: hltb && hltb.completely ? hltb.completely : null,
                         hltb_main_story: hltb
                     });
 

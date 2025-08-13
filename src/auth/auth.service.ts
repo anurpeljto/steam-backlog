@@ -21,38 +21,38 @@ export class AuthService {
         private jwtService: JwtService
     ){}
 
-    async login(email: string, password: string) {
-        const user = await this.userService.findUser(email);
-        if(!user){
-            throw new BadRequestException('User with this email does not exist');
-        }
+    // async login(email: string, password: string) {
+    //     const user = await this.userService.findUser(email);
+    //     if(!user){
+    //         throw new BadRequestException('User with this email does not exist');
+    //     }
         
-        if(user.password !== password) {
-            throw new UnauthorizedException('Incorrect email or password combination');
-        }
+    //     if(user.password !== password) {
+    //         throw new UnauthorizedException('Incorrect email or password combination');
+    //     }
 
-        const payload = {
-            sub: user.email,
-            email: user.email,
-            first_name: user.first_name,
-            last_name: user.last_name
-        }
+    //     const payload = {
+    //         sub: user.email,
+    //         email: user.email,
+    //         first_name: user.first_name,
+    //         last_name: user.last_name
+    //     }
 
-        return {
-            access_token: await this.jwtService.signAsync(payload)
-        }
-    }
+    //     return {
+    //         access_token: await this.jwtService.signAsync(payload)
+    //     }
+    // }
 
-    async register(registerDto: RegisterDto) {
-        const user = await this.userService.findUser(registerDto.email);
-        if(user){
-            throw new BadRequestException('User with given email already exists');
-        }
+    // async register(registerDto: RegisterDto) {
+    //     const user = await this.userService.findUser(registerDto.email);
+    //     if(user){
+    //         throw new BadRequestException('User with given email already exists');
+    //     }
 
-        await this.userService.createUser(registerDto);
+    //     await this.userService.createUser(registerDto);
 
-        return this.login(registerDto.email, registerDto.password);
-    }
+    //     return this.login(registerDto.email, registerDto.password);
+    // }
 
     async getRedirectUrl(): Promise<string> {
         return new Promise((res, rej) => {
@@ -100,15 +100,39 @@ export class AuthService {
                     }
 
                     const player = data.response.players[0];
+
+                    let user = await this.userService.findUser(steamId);
+
+                    if(!user){
+                        user = await this.userService.createUser({
+                            steam_id: steamId,
+                            username: player.personaname
+                        })
+                    }
+
+                    console.log({
+                        sub: user.id,
+                        steam_id: user.steam_id,
+                        personaname: player.personaname,
+                        avatar: player.avatarfull,
+                        profileUrl: player.profileurl
+                    });
+
+                    const token = await this.jwtService.signAsync({
+                        sub: user.id,
+                        steam_id: steamId,
+                        personaname: player.personaname,
+                        avatar: player.avatarfull,
+                        profileUrl: player.profileurl
+                    });
+
                     res({
-                    steamid: steamId,
-                    personaname: player.personaname,
-                    avatar: player.avatarfull,
-                    profileurl: player.profileurl,
+                        access_token: token,
+                        user
                     });
 
                 } catch (fetchError) {
-                    console.log(fetchError);
+                    // console.log(fetchError);
                     rej(new UnauthorizedException('Failed to fetch Steam profile'));
                 }
             });

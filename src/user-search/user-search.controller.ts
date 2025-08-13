@@ -1,4 +1,5 @@
-import { Controller, Get, HttpStatus, Param, Query } from '@nestjs/common';
+import { Controller, Get, HttpStatus, Param, Query, UseGuards } from '@nestjs/common';
+import { AuthGuard } from 'src/auth/auth.guard';
 import { GamesServiceService } from 'src/games-service/games-service.service';
 
 @Controller('user-search')
@@ -8,11 +9,13 @@ export class UserSearchController {
         private gamesService: GamesServiceService
     ){}
 
+    @UseGuards(AuthGuard)
     @Get('/games/:steamId')
     async getUserGames(@Param('steamId') steamId: string) {
         return await this.gamesService.fetchAndStoreUserGames(steamId);
     }
 
+    @UseGuards(AuthGuard)
     @Get('/games/:steamId/metadata')
     async getUserGamesFromDb(
         @Param('steamId') steamId: string,
@@ -26,6 +29,7 @@ export class UserSearchController {
         return await this.gamesService.getUserGamesWithMetadata(steamId, page, size, filter, genre, category);
     }
 
+    @UseGuards(AuthGuard)
     @Get('/games/:steamid/genres')
     async getUserGamesGenres(
         @Param('steamid') steamid: string
@@ -33,6 +37,7 @@ export class UserSearchController {
         return this.gamesService.getUserGamesGenres(steamid);
     }
 
+    @UseGuards(AuthGuard)
     @Get('/games/:steamid/recommended')
     async getRecommendedGames(
         @Param('steamid') steamid: string,
@@ -41,6 +46,7 @@ export class UserSearchController {
         return this.gamesService.getRecommendedGames(steamid, amount);
     }
 
+    @UseGuards(AuthGuard)
     @Get('/games/:steamid/search')
     async searchGames(
         @Query('search') search: string,

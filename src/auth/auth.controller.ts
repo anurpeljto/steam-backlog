@@ -8,21 +8,21 @@ import { Request, Response } from 'express';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @HttpCode(HttpStatus.OK)
-  @Post('/login')
-  logIn(
-    @Body() logInDto: LoginDto
-  ) {
-    return this.authService.login(logInDto.email, logInDto.password);
-  }
+  // @HttpCode(HttpStatus.OK)
+  // @Post('/login')
+  // logIn(
+  //   @Body() logInDto: LoginDto
+  // ) {
+  //   return this.authService.login(logInDto.email, logInDto.password);
+  // }
 
-  @HttpCode(HttpStatus.CREATED)
-  @Post('/register')
-  register(
-    @Body() registerDto: RegisterDto
-  ) {
-    return this.authService.register(registerDto);
-  }
+  // @HttpCode(HttpStatus.CREATED)
+  // @Post('/register')
+  // register(
+  //   @Body() registerDto: RegisterDto
+  // ) {
+  //   return this.authService.register(registerDto);
+  // }
 
   @Get('steam')
   async redirectToSteam(@Res() res: Response){
@@ -33,7 +33,6 @@ export class AuthController {
   @Get('steam/return')
   async handleSteamReturn(@Req() req: Request, @Res() res: Response) {
     const steamUser = await this.authService.validateSteamReturn(req);
-    const token = await this.authService.generateToken(steamUser);
-    return res.redirect(`http://localhost:4200/steam/callback?token=${token.access_token}`);
+    return res.redirect(`http://localhost:4200/steam/callback?token=${steamUser.access_token}`);
   }
 }
