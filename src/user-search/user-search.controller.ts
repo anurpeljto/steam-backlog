@@ -9,7 +9,7 @@ export class UserSearchController {
         private gamesService: GamesServiceService
     ){}
 
-    @UseGuards(AuthGuard)
+    // @UseGuards(AuthGuard)
     @Get('/games/:steamId')
     async getUserGames(@Param('steamId') steamId: string) {
         return await this.gamesService.fetchAndStoreUserGames(steamId);

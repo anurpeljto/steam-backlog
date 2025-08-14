@@ -67,6 +67,24 @@ export interface GameDetails {
     recommendations?: {
         total: number;
     };
+    screenshots?: [
+        {
+            id: number;
+            path_thumbnail: string;
+            path_full: string;
+        }
+    ];
+    // movies?: [
+    //     {
+    //         id: number;
+    //         name: string;
+    //         thumbnail: string;
+    //         webm: {
+    //             480: string;
+    //             max: string;
+    //         }
+    //     }
+    // ]
 }
 
 export interface Rating {

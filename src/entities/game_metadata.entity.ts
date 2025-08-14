@@ -1,3 +1,5 @@
+import { Screenshot } from 'src/common/interfaces/screenshot.interface';
+import Movie from 'src/worker/interfaces/movie.interface';
 import { Entity, PrimaryColumn, Column } from 'typeorm';
 
 @Entity('game_metadata')
@@ -34,4 +36,10 @@ export class GameMetadata {
 
   @Column({type: 'bigint', nullable: true})
   rating: number | null;
+
+  @Column({type: 'jsonb', nullable: true})
+  screenshots: Screenshot[]
+
+  @Column({type: 'jsonb', nullable: true})
+  movies: Movie[];
 }

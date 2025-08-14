@@ -94,8 +94,8 @@ export class GamesServiceService {
           game.description === null ||
           game.header_image === null ||
           game.rating === null || 
-          game.genres === null ) && 
-          game.last_fetched <= thisWeek
+          game.genres === null ) 
+          // game.last_fetched <= thisWeek
       ){
         console.log(`Game ${game.name} is missing a field, `)
         await this.metadataQueue.addFetchJob(game.appid);
@@ -250,6 +250,7 @@ export class GamesServiceService {
       'gm.genres AS genres',
       'gm.categories AS categories',
       'og.isCompleted AS isCompleted',
+      'gm.hltb_main_story',
       'gm.rating AS rating',
       'gm.description AS description'
     ])

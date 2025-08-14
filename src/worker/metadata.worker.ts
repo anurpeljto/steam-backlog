@@ -56,10 +56,14 @@ export class MetadataWorker implements OnModuleInit{
                         tags: [],
                         last_fetched: new Date(),
                         header_image: appData.header_image,
-                        hltb_100_percent: null,
                         hltb_main_story: null,
                         description: appData.short_description,
-                        rating: appData.recommendations?.total || null
+                        rating: appData.recommendations?.total || null,
+                        detailed_description: appData.detailed_description,
+                        about_game: appData.about_the_game,
+                        capsule_image: appData.capsule_image,
+                        screenshots: appData.screenshots,
+                        movies: appData.movies
                     } as any);
                     return;
                 }
@@ -74,7 +78,13 @@ export class MetadataWorker implements OnModuleInit{
                         last_fetched: new Date(),
                         header_image: appData.header_image,
                         description: appData.short_description,
-                        hltb_main_story: hltb
+                        hltb_main_story: hltb,
+                        rating: appData.recommendations?.total || null,
+                        detailed_description: appData.detailed_description,
+                        about_game: appData.about_the_game,
+                        capsule_image: appData.capsule_image,
+                        screenshots: appData.screenshots,
+                        movies: appData.movies
                     });
 
                     try {
