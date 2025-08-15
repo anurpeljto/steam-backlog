@@ -42,4 +42,13 @@ export class GameMetadata {
 
   @Column({type: 'jsonb', nullable: true})
   movies: Movie[];
+
+  @Column({type: 'varchar', nullable: true})
+  detailed_description: string;
+
+  @Column({type: 'varchar', nullable: true})
+  about_game: string;
+
+  @Column({type: 'varchar', nullable: true})
+  capsule_image: string;
 }
