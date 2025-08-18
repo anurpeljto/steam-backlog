@@ -37,7 +37,7 @@ import { BadgesModule } from './badges/badges.module';
     }),
     GamesServiceModule,
     GameTimeModule,
-    BadgesModule
+    BadgesModule,
   ],
   controllers: [AppController],
   providers: [AppService, GameTimeService],

@@ -10,6 +10,7 @@ import { Repository } from "typeorm";
 import { WorkerService } from "./worker.service";
 import { OwnedGame } from "src/entities/ownedgame.entity";
 import GameDetailsResponse, { GameDetails } from "./interfaces/game-details.interface";
+import { EmbeddingsService } from "src/embeddings/embeddings.service";
 
 
 @Injectable()
@@ -20,6 +21,7 @@ export class MetadataWorker implements OnModuleInit{
         private config: ConfigService,
         private hltbService: GameTimeService,
         private workerService: WorkerService,
+        private embeddingService: EmbeddingsService,
         @InjectRepository(OwnedGame) private ownedGameRepo: Repository<OwnedGame>,
         @InjectRepository(GameMetadata) private metadataRepo: Repository<GameMetadata>
     ){}
@@ -108,6 +110,11 @@ export class MetadataWorker implements OnModuleInit{
                     } catch (err) {
                       console.log(`Failed to save metadata for appid ${appid}`, err);
                     }
+                    // finally {
+                    //     this.embeddingService.ensureEmbedding(appid).catch(err => 
+                    //         console.error(`Embedding failed for ${appid}: `, err)
+                    //     );
+                    // } openai charges :(
             },
             {
                 connection: {

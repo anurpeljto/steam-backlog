@@ -1,12 +1,14 @@
 import { Controller, Get, HttpStatus, Param, Query, UseGuards } from '@nestjs/common';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { GamesServiceService } from 'src/games-service/games-service.service';
+import { RecommenderService } from 'src/recommender/recommender.service';
 
 @Controller('user-search')
 export class UserSearchController {
 
     constructor(
-        private gamesService: GamesServiceService
+        private gamesService: GamesServiceService,
+        private recommenderService: RecommenderService
     ){}
 
     // @UseGuards(AuthGuard)
@@ -64,5 +66,14 @@ export class UserSearchController {
         @Query('steamid') steamid: string
     ){
         return this.gamesService.getGameMetadata(id, steamid);
+    }
+    
+    @Get('/games/:steamid/recommended/ai')
+    async recommendAI(
+        @Param('steamid') steamid: string,
+        @Query('limit') limit?: string
+    ){
+        const n = Math.min(Math.max(parseInt(limit || '10', 10) || 10, 1), 50);       
+        return this.recommenderService.recommendFromLibrary(steamid, n);
     }
 }
