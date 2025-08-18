@@ -3,7 +3,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UserSearchModule } from './user-search/user-search.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
@@ -19,21 +19,21 @@ import { BadgesModule } from './badges/badges.module';
 
 @Module({
   imports: [AuthModule, UsersModule, ConfigModule.forRoot({isGlobal: true}), UserSearchModule, HttpModule, MetadataModule, GamesServiceModule,
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: 'steam-backlog-tutshack4-a083.l.aivencloud.com',
-      port: 23849,
-      username: 'avnadmin',
-      password: 'AVNS_hs6bbcgov8xxFW9P3f4',
-      database: 'defaultdb',
-      synchronize: true,
-      autoLoadEntities: true,
-      entities: [
-        User,
-        OwnedGame,
-        GameMetadata
-      ],
-      ssl: {rejectUnauthorized: false} 
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => ({
+        type: 'postgres',
+        host: config.get('DB_HOST'),
+        port: config.get('DB_PORT') || 3000,
+        username: config.get('DB_USER'),
+        password: config.get('DB_PW'),
+        database: config.get('DB_DB'),
+        synchronize: true,
+        autoLoadEntities: true,
+        ssl: { rejectUnauthorized: false },
+        entities: [User, OwnedGame, GameMetadata]
+      })
     }),
     GamesServiceModule,
     GameTimeModule,
