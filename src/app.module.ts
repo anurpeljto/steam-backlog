@@ -9,13 +9,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { OwnedGame } from './entities/ownedgame.entity';
 import { GameMetadata } from './entities/game_metadata.entity';
-import { GamesServiceService } from './games-service/games-service.service';
 import { HttpModule } from '@nestjs/axios';
 import { GamesServiceModule } from './games-service/games-service.module';
 import { MetadataModule } from 'src/worker/metadata.module';
-import { GameTimeService } from './game-time/game-time.service';
 import { GameTimeModule } from './game-time/game-time.module';
 import { BadgesModule } from './badges/badges.module';
+import { GameStatusModule } from './game-status/game-status.module';
 
 @Module({
   imports: [AuthModule, UsersModule, ConfigModule.forRoot({isGlobal: true}), UserSearchModule, HttpModule, MetadataModule, GamesServiceModule,
@@ -38,8 +37,9 @@ import { BadgesModule } from './badges/badges.module';
     GamesServiceModule,
     GameTimeModule,
     BadgesModule,
+    GameStatusModule,
   ],
   controllers: [AppController],
-  providers: [AppService, GameTimeService],
+  providers: [AppService],
 })
 export class AppModule {}

@@ -10,7 +10,6 @@ import { Repository } from "typeorm";
 import { WorkerService } from "./worker.service";
 import { OwnedGame } from "src/entities/ownedgame.entity";
 import GameDetailsResponse, { GameDetails } from "./interfaces/game-details.interface";
-import { EmbeddingsService } from "src/embeddings/embeddings.service";
 
 
 @Injectable()
@@ -21,7 +20,6 @@ export class MetadataWorker implements OnModuleInit{
         private config: ConfigService,
         private hltbService: GameTimeService,
         private workerService: WorkerService,
-        private embeddingService: EmbeddingsService,
         @InjectRepository(OwnedGame) private ownedGameRepo: Repository<OwnedGame>,
         @InjectRepository(GameMetadata) private metadataRepo: Repository<GameMetadata>
     ){}

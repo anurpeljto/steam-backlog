@@ -6,10 +6,9 @@ import { GameMetadata } from 'src/entities/game_metadata.entity';
 import { GameTimeModule } from 'src/game-time/game-time.module';
 import { WorkerModule } from './worker.module';
 import { OwnedGame } from 'src/entities/ownedgame.entity';
-import { EmbeddingsModule } from 'src/embeddings/embeddings.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([GameMetadata, OwnedGame]), GameTimeModule, WorkerModule, EmbeddingsModule],
+  imports: [TypeOrmModule.forFeature([GameMetadata, OwnedGame]), GameTimeModule, WorkerModule],
   providers: [MetadataQueue, MetadataWorker],
   exports: [MetadataQueue]
 })
