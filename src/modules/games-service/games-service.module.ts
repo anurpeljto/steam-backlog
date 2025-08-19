@@ -6,7 +6,7 @@ import { OwnedGame } from 'src/entities/ownedgame.entity';
 import { User } from 'src/entities/user.entity';
 import { GamesServiceService } from './games-service.service';
 import { MetadataModule } from 'src/worker/metadata.module';
-import { GameTimeModule } from 'src/game-time/game-time.module';
+import { GameTimeModule } from 'src/modules/game-time/game-time.module';
 
 @Module({
     imports: [

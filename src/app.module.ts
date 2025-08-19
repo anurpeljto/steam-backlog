@@ -2,19 +2,19 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
-import { UsersModule } from './users/users.module';
+import { UsersModule } from './modules/users/users.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { UserSearchModule } from './user-search/user-search.module';
+import { UserSearchModule } from './modules/user-search/user-search.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { OwnedGame } from './entities/ownedgame.entity';
 import { GameMetadata } from './entities/game_metadata.entity';
 import { HttpModule } from '@nestjs/axios';
-import { GamesServiceModule } from './games-service/games-service.module';
+import { GamesServiceModule } from './modules/games-service/games-service.module';
 import { MetadataModule } from 'src/worker/metadata.module';
-import { GameTimeModule } from './game-time/game-time.module';
+import { GameTimeModule } from './modules/game-time/game-time.module';
 import { BadgesModule } from './badges/badges.module';
-import { GameStatusModule } from './game-status/game-status.module';
+import { GameStatusModule } from './modules/game-status/game-status.module';
 
 @Module({
   imports: [AuthModule, UsersModule, ConfigModule.forRoot({isGlobal: true}), UserSearchModule, HttpModule, MetadataModule, GamesServiceModule,

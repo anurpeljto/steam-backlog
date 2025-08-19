@@ -5,7 +5,7 @@ import axios from "axios";
 import { Worker } from "bullmq";
 import Genre from "src/common/interfaces/genre.interface";
 import { GameMetadata } from "src/entities/game_metadata.entity";
-import { GameTimeService } from "src/game-time/game-time.service";
+import { GameTimeService } from "src/modules/game-time/game-time.service";
 import { Repository } from "typeorm";
 import { WorkerService } from "./worker.service";
 import { OwnedGame } from "src/entities/ownedgame.entity";

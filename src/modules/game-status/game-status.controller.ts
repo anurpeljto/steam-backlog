@@ -1,7 +1,7 @@
 import { Body, Controller, Param, Post, Req, UseGuards } from '@nestjs/common';
-import { AuthGuard } from 'src/auth/auth.guard';
+import { AuthGuard } from 'src/common/guards/auth.guard';
 import { GameStatusService } from './game-status.service';
-import { UserDecorator } from 'src/decorators/user.decorator';
+import { UserDecorator } from 'src/common/decorators/user.decorator';
 
 @Controller('game-status')
 export class GameStatusController {

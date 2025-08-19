@@ -21,4 +21,7 @@ export class User {
 
     @OneToMany(() => OwnedGame, game => game.user)
     owned_games: OwnedGame[];
+
+    @Column({ type: 'varchar', nullable: true, default: "Welcome to my profile! I''m here to clear my backlog and discover new games."})
+    description: string;
 }
