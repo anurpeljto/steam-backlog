@@ -1,6 +1,6 @@
 import { Controller, Get, HttpStatus, Param, Query, UseGuards } from '@nestjs/common';
-import { AuthGuard } from 'src/auth/auth.guard';
-import { GamesServiceService } from 'src/games-service/games-service.service';
+import { AuthGuard } from 'src/common/guards/auth.guard';
+import { GamesServiceService } from 'src/modules/games-service/games-service.service';
 
 @Controller('user-search')
 export class UserSearchController {

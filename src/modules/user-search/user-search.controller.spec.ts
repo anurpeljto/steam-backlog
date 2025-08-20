@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UserSearchController } from './user-search.controller';
-import { GamesServiceService } from 'src/games-service/games-service.service';
+import { GamesServiceService } from 'src/modules/games-service/games-service.service';
 
 const mockGame = {
   total: 1,

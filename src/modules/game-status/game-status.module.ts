@@ -5,7 +5,7 @@ import { GameStatusService } from './game-status.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { OwnedGame } from 'src/entities/ownedgame.entity';
 import { AuthModule } from 'src/auth/auth.module';
-import { AuthGuard } from 'src/auth/auth.guard';
+import { AuthGuard } from 'src/common/guards/auth.guard';
 import { User } from 'src/entities/user.entity';
 
 @Module({

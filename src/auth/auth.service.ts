@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { UsersService } from 'src/users/users.service';
+import { UsersService } from 'src/modules/users/users.service';
 import { RegisterDto } from './dto/RegisterDto';
 import * as openid from 'openid';
 import axios from 'axios';
@@ -96,7 +96,7 @@ export class AuthService {
                     });
                      if (!data || !data.response || !data.response.players || data.response.players.length === 0) {
                         console.error('Steam API returned no player data:', data);
-                    return rej(new UnauthorizedException('Failed to fetch Steam profile'));
+                        return rej(new UnauthorizedException('Failed to fetch Steam profile'));
                     }
 
                     const player = data.response.players[0];
@@ -110,20 +110,13 @@ export class AuthService {
                         })
                     }
 
-                    console.log({
-                        sub: user.id,
-                        steam_id: user.steam_id,
-                        personaname: player.personaname,
-                        avatar: player.avatarfull,
-                        profileUrl: player.profileurl
-                    });
-
                     const token = await this.jwtService.signAsync({
                         sub: user.id,
                         steam_id: steamId,
                         personaname: player.personaname,
                         avatar: player.avatarfull,
-                        profileUrl: player.profileurl
+                        profileUrl: player.profileurl,
+                        description: user.description
                     });
 
                     res({
