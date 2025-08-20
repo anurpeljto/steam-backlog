@@ -119,23 +119,23 @@ describe('GamesServiceService', () => {
     });
 
     it('should throw error when user has no games', async () => {
-    jest.spyOn(usersRepo, 'findOne').mockResolvedValue(null);
-    jest.spyOn(usersRepo, 'create').mockReturnValue({ id: 123, steam_id: testSteamId } as User);
-    jest.spyOn(usersRepo, 'save').mockResolvedValue({ id: 123, steam_id: testSteamId } as User);
+      jest.spyOn(usersRepo, 'findOne').mockResolvedValue(null);
+      jest.spyOn(usersRepo, 'create').mockReturnValue({ id: 123, steam_id: testSteamId } as User);
+      jest.spyOn(usersRepo, 'save').mockResolvedValue({ id: 123, steam_id: testSteamId } as User);
 
-    jest.spyOn(service['http'], 'get').mockReturnValue({
-      toPromise: jest.fn(),
-    } as any);
+      jest.spyOn(service['http'], 'get').mockReturnValue({
+        toPromise: jest.fn(),
+      } as any);
 
-    jest.spyOn(require('rxjs'), 'firstValueFrom').mockResolvedValue({
-      data: {
-        response: {
-          games: []
+      jest.spyOn(require('rxjs'), 'firstValueFrom').mockResolvedValue({
+        data: {
+          response: {
+            games: []
+          }
         }
-      }
-    });
+      });
 
-    await expect(service.fetchAndStoreUserGames(testSteamId)).rejects.toThrow('User has no existing metadata');
+      await expect(service.fetchAndStoreUserGames(testSteamId)).rejects.toThrow('User has no existing metadata');
   });
 
   // create user if missing on fetch & store
