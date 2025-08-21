@@ -15,4 +15,10 @@ export class Badge {
 
     @Column('int')
     condition: number;
+
+    @Column({type: 'varchar', nullable: true})
+    badge_image_location: string;
+
+    @Column({type: 'varchar', nullable: true})
+    bordered_badge_image_location: string;
 }
