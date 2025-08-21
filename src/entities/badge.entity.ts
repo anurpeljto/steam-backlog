@@ -21,4 +21,7 @@ export class Badge {
 
     @Column({type: 'varchar', nullable: true})
     bordered_badge_image_location: string;
+
+    @Column({type: 'varchar', nullable: true})
+    gif: string;
 }
