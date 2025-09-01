@@ -12,9 +12,10 @@ import Game, { GameResponse } from 'src/common/interfaces/game.interface';
 import { GameMetadata } from 'src/entities/game_metadata.entity';
 import { OwnedGame } from 'src/entities/ownedgame.entity';
 import { User } from 'src/entities/user.entity';
-import { In, Like, Repository } from 'typeorm';
+import { DeepPartial, In, Like, Repository } from 'typeorm';
 import { MetadataQueue } from 'src/worker/metadata.queue';
 import MetaData from 'src/common/interfaces/metadata.interface';
+import { UserStreak } from 'src/entities/user-streak.entity';
 
 @Injectable()
 export class GamesServiceService {
@@ -22,6 +23,7 @@ export class GamesServiceService {
     @InjectRepository(OwnedGame) private ownedRepo: Repository<OwnedGame>,
     @InjectRepository(User) private usersRepo: Repository<User>,
     @InjectRepository(GameMetadata) private metadataRepo: Repository<GameMetadata>,
+    @InjectRepository(UserStreak) private userStreaksRepo: Repository<UserStreak>,
     private http: HttpService,
     private metadataQueue: MetadataQueue,
     private config: ConfigService
@@ -295,5 +297,63 @@ export class GamesServiceService {
         metadata: gameEntry,
         userData: userGameData
       };
+  }
+
+  async markGameSelected(appid: number, user_id: number, grace?: boolean){
+    const game = await this.ownedRepo.findOne({
+      where: {
+        appid,
+        user: { id: user_id }
+      }
+    });
+
+    if(!game){
+      throw new NotFoundException('Game not found in this library');
+    }
+
+    const currentGame = await this.ownedRepo.findOne({
+      where: {
+        user: {id: user_id},
+        isPlayingCurrently: true
+      }
+    });
+
+    if(currentGame){
+      currentGame.isPlayingCurrently = false;
+      await this.ownedRepo.save(currentGame);
+    }
+
+    game.isPlayingCurrently = true;
+    await this.ownedRepo.save(game);
+    
+    const userStreak = await this.userStreaksRepo.findOne({
+      where: {
+        user: { id: user_id }
+      }
+    });
+
+    if(userStreak){
+      if(grace) {
+        userStreak.current_streak = userStreak.current_streak;
+        userStreak.appid = appid;
+      }
+      else {
+        userStreak.current_streak = 1;
+        userStreak.appid = appid;
+        userStreak.status = 'active';
+      }
+      await this.userStreaksRepo.save(userStreak);
+    }
+
+    else {
+      const newStreak = this.userStreaksRepo.create({
+        user: { id: user_id },
+        current_streak: 1,
+        appid,
+        status: 'active'
+      });
+      await this.userStreaksRepo.save(newStreak);
+    }
+    return game;
   }
 }

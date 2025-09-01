@@ -1,4 +1,4 @@
-import { Column, Entity, OneToOne, PrimaryColumn } from "typeorm";
+import { Column, Entity, OneToOne, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
 import { User } from "./user.entity";
 import { Badge } from "./badge.entity";
 
@@ -6,7 +6,7 @@ import { Badge } from "./badge.entity";
 @Entity('user_badges')
 export class UserBadges {
 
-    @PrimaryColumn()
+    @PrimaryGeneratedColumn()
     id: number;
 
     @OneToOne(() => User, user => user.id)

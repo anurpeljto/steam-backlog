@@ -42,4 +42,28 @@ export class BadgesController {
     ){
         return this.badgeService.deleteBadge(badge_id);
     }
+
+    @Get('user/:id')
+    getUserBadges(
+        @Param('id') steam_id: string
+    ){
+        return this.badgeService.getUserBadges(steam_id);
+    }
+
+    @Post('user/:id')
+    unlockBadge(
+        @Param('id') steam_id: string,
+        @Body() body: {
+            badge_id: number
+        }
+    ) {
+        return this.badgeService.unlockBadge(steam_id, body.badge_id);
+    }
+
+    @Get('user/streak/:id')
+    getUserStreak(
+        @Param('id') steam_id: string
+    ){
+        return this.badgeService.getUserStreak(steam_id);
+    }
 }

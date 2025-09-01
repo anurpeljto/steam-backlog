@@ -28,4 +28,10 @@ export class OwnedGame {
 
   @Column({ type: 'boolean', nullable: true})
   isCompleted: boolean | null;
+
+  @Column({type: 'boolean', nullable: true})
+  isPlayingCurrently: boolean | null;
+
+  @Column({ type: 'date', nullable: true})
+  started_playing_at: string;
 }
