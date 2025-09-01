@@ -1,5 +1,5 @@
 export enum ResponseTypes {
-    "Yes",
-    "No",
-    "Finished"
+    Yes = "Yes",
+    No = "No",
+    Finished = "Finished"
 }

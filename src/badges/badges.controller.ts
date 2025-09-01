@@ -1,12 +1,13 @@
 import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
 import { BadgesService } from './badges.service';
 import { BadgeInterface } from './interfaces/badge.interface';
+import { ResponseTypes } from 'src/common/enums/response.enum';
 
 @Controller('badges')
 export class BadgesController {
 
     constructor(
-        private badgeService: BadgesService
+        private badgeService: BadgesService,
     ){}
 
     @Get('all')
@@ -60,10 +61,31 @@ export class BadgesController {
         return this.badgeService.unlockBadge(steam_id, body.badge_id);
     }
 
-    @Get('user/streak/:id')
+    @Get('streak/:id')
     getUserStreak(
         @Param('id') steam_id: string
     ){
         return this.badgeService.getUserStreak(steam_id);
+    }
+
+    @Post('progress/:id')
+    updateStreakProgress(
+        @Param('id') steam_id: string,
+        @Body() body: {
+            response: ResponseTypes
+        }
+    ){
+        return this.badgeService.userProgressPrompt(steam_id, body.response);
+    }
+
+    @Post('streak/select/:id')
+    markGameSelected(
+        @Param('id') steam_id: string,
+        @Body() body: {
+            appid: number;
+            grace?: boolean
+        }
+    ) {
+        return this.badgeService.markGameSelected(body.appid, steam_id, body.grace);
     }
 }

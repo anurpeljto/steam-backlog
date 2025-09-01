@@ -30,9 +30,6 @@ export class UserStreak {
   @Column({ default: 0 })
   longest_streak: number;
 
-  @Column({ type: 'date', nullable: true })
-  last_active_date: string | null;
-
   @Column({
     type: 'enum',
     enum: ['active', 'finished', 'inactive'],
@@ -48,4 +45,7 @@ export class UserStreak {
 
   @UpdateDateColumn()
   updated_at: Date;
+
+  @Column({ type: 'varchar', nullable: true })
+  game_title: string;
 }
