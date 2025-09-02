@@ -6,9 +6,9 @@ It looks at genres, topics and types of games you like and own and based on that
 
 ## FAQ
 
-#### Is Steam Backlog Helper paid?
+#### Is Steam Backlog Helper free?
 
-No, Steam Backlog Helper is free to use (with a Steam account).
+Yes, Steam Backlog Helper is free to use (with a Steam account).
 
 #### Is Steam Backlog Helper still WIP?
 
